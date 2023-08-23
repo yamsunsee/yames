@@ -4,9 +4,9 @@ import { State } from "../types";
 const useStore = create<State>((set) => ({
   socket: null,
   form: {
-    serverUrl: "http://localhost:5000",
-    playerName: "Yam",
-    roomId: "ABC123",
+    serverUrl: "",
+    playerName: "",
+    roomId: "",
   },
   room: {
     id: "",

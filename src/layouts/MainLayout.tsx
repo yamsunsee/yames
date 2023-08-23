@@ -56,7 +56,7 @@ const MainLayout = () => {
 
         const newSocket = io(localForm.serverUrl, {
           extraHeaders: {
-            "ngrok-skip-browser-warning": "false",
+            "ngrok-skip-browser-warning": "true",
           },
         });
 

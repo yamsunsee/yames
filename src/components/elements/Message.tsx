@@ -6,7 +6,7 @@ const Message: FC<MessageProps> = ({ isSelf = true, data }) => {
     <div className={`flex items-end${isSelf ? " self-end" : ""}`}>
       <div
         title={data.content}
-        className={`max-w-xs truncate rounded-full bg-theme px-4 py-2 text-white${
+        className={`max-w-[12rem] break-words rounded-2xl bg-theme px-4 py-2 text-white${
           isSelf ? " order-1 rounded-br-none" : " order-2 rounded-bl-none"
         }`}
       >

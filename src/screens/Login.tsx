@@ -29,7 +29,7 @@ const Login = () => {
 
     const socket = io(form.serverUrl, {
       extraHeaders: {
-        "ngrok-skip-browser-warning": "false",
+        "ngrok-skip-browser-warning": "true",
       },
     });
 
@@ -71,6 +71,7 @@ const Login = () => {
             type: "success",
             autoClose: 3000,
           });
+          sessionStorage.setItem("yames", JSON.stringify(form));
           navigate("/");
           break;
 
