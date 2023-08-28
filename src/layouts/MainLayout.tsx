@@ -2,12 +2,14 @@ import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Chat from "../components/sections/Chat";
-import Icon from "../components/elements/Icon";
 import useStore from "../stores";
+import { useLanguages } from "../hooks";
+import { Icon } from "../components/elements";
+import { Chat } from "../components/sections";
 
 const MainLayout = () => {
   const navigate = useNavigate();
+  const translate = useLanguages();
   const { socket, setSocket, form, setForm, setRoom, setMessages } = useStore();
   const [isCollapse, setIsCollapse] = useState(false);
 
@@ -15,7 +17,7 @@ const MainLayout = () => {
     setMessages({
       type: "NOTIFICATION",
       playerName: "",
-      content: "You has joined room",
+      content: translate("You has joined room", "Bạn đã vào phòng"),
     });
   }, []);
 
@@ -23,6 +25,7 @@ const MainLayout = () => {
     if (socket) {
       socket.on("CLIENT", (action) => {
         const { type, payload } = action;
+        console.log(payload);
 
         switch (type) {
           case "NOTIFICATIONS":
@@ -44,15 +47,20 @@ const MainLayout = () => {
       });
 
       socket.on("connect_error", () => {
-        toast.error("Something went wrong! Looks like the server is down!");
+        toast.error(
+          translate(
+            "Something went wrong! Looks like the server is down!",
+            "Có gì đó không ổn! Có vẻ như máy chủ đã tạm dừng!"
+          )
+        );
         navigate("/login");
         socket.close();
       });
     } else {
-      const localData = sessionStorage.getItem("yames");
+      const localFormData = sessionStorage.getItem("yames-form");
 
-      if (localData) {
-        const localForm = JSON.parse(localData);
+      if (localFormData) {
+        const localForm = JSON.parse(localFormData);
 
         const newSocket = io(localForm.serverUrl, {
           extraHeaders: {
@@ -60,16 +68,21 @@ const MainLayout = () => {
           },
         });
 
-        const toastId = toast(<Icon isLoading>Reconnecting to the server...</Icon>, {
-          autoClose: false,
-        });
+        const toastId = toast(
+          <Icon isLoading>{translate("Reconnecting to the server...", "Đang tái kết nối với máy chủ...")}</Icon>,
+          {
+            autoClose: false,
+          }
+        );
 
         newSocket.on("connect_error", () => {
           toast.update(toastId, {
             render: (
               <>
-                <div>Failed to reconnect to the server!</div>
-                <div>Something went wrong! Please try again!</div>
+                <div>{translate("Failed to reconnect to the server!", "Tái kết nối với máy chủ thất bại!")}</div>
+                <div>
+                  {translate("Something went wrong! Please try again!", "Có gì đó không ổn! Vui lòng thử lại!")}
+                </div>
               </>
             ),
             type: "error",
@@ -96,7 +109,7 @@ const MainLayout = () => {
               setForm(localForm);
               setRoom(payload.room);
               toast.update(toastId, {
-                render: "Successfully reconnected to the server!",
+                render: translate("Successfully reconnected to the server!", "Tái kết nối với máy chủ thành công!"),
                 type: "success",
                 autoClose: 3000,
               });

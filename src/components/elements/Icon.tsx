@@ -4,14 +4,15 @@ import { toast } from "react-toastify";
 
 const Icon: FC<IconProps> = ({
   name,
+  size = "NORMAL",
+  isCopyable = false,
+  isButton = false,
   isLoading = false,
   isTruncate = false,
-  copyable = false,
-  size = "NORMAL",
   children,
 }) => {
   const handleCopy = async () => {
-    if (!copyable) return;
+    if (!isCopyable) return;
     try {
       await navigator.clipboard.writeText(children?.toString() ?? "");
       toast.success("Copied to clipboard!");
@@ -23,8 +24,8 @@ const Icon: FC<IconProps> = ({
   return (
     <div
       onClick={handleCopy}
-      title={copyable ? "Click to copy" : ""}
-      className={`flex items-center ${isLoading ? "gap-2" : "gap-1"}${copyable ? " cursor-pointer" : ""}`}
+      title={isCopyable ? "Click to copy" : ""}
+      className={`flex items-center ${isLoading || isButton ? "gap-2" : "gap-1"}${isCopyable ? " cursor-pointer" : ""}`}
     >
       <span
         className={`material-symbols-rounded${isLoading ? " animate-spin" : ""}${

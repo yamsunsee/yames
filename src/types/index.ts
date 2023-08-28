@@ -1,13 +1,9 @@
 import { ReactNode, MouseEvent } from "react";
 import { Socket } from "socket.io-client";
 
-export enum COLOR {
-  GRAY = "bg-gray-400",
-  GREEN = "bg-green-400",
-  BLUE = "bg-blue-400",
-  RED = "bg-red-400",
-  AMBER = "bg-amber-400",
-  INDIGO = "bg-indigo-400",
+export enum LANGUAGE {
+  ENGLISH = "english",
+  VIETNAMESE = "vietnamese",
 }
 
 type Player = {
@@ -37,28 +33,33 @@ export type State = {
   room: Room;
   messages: Message[];
   socket: Socket | null;
+  language: LANGUAGE;
+
+  clearMessages: () => void;
   setRoom: (room: Room) => void;
   setForm: (form: Form) => void;
   setSocket: (socket: Socket) => void;
   setMessages: (messages: Message) => void;
-  clearMessages: () => void;
+  toggleLanguage: () => void;
+  setLanguage: (language: LANGUAGE) => void;
 };
 
 export type IconProps = {
   name?: string;
+  isButton?: boolean;
   isLoading?: boolean;
   isTruncate?: boolean;
   size?: "NORMAL" | "LARGE";
-  copyable?: boolean;
+  isCopyable?: boolean;
   children?: ReactNode;
 };
 
 export type ButtonProps = {
   name: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
   children?: ReactNode;
-  size?: "SMALL" | "NORMAL";
-  stretch?: boolean;
+  size?: "NORMAL" | "LARGE";
+  isStretch?: boolean;
   action?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 

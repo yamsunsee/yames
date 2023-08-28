@@ -1,16 +1,15 @@
 import { FC, FormEvent, ChangeEvent, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../elements/Button";
-import Icon from "../elements/Icon";
-import Player from "../elements/Player";
-import Message from "../elements/Message";
 import { ChatProps } from "../../types";
 import { toast } from "react-toastify";
 import useStore from "../../stores";
+import { useLanguages } from "../../hooks";
+import { Button, Icon, Message, Player } from "../elements";
 
 const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
   const navigate = useNavigate();
-  const { socket, form, room, messages, setMessages, clearMessages } = useStore();
+  const translate = useLanguages();
+  const { socket, form, room, messages, setMessages, clearMessages, toggleLanguage } = useStore();
   const [message, setMessage] = useState("");
   const [isNotice, setIsNotice] = useState(true);
 
@@ -79,7 +78,7 @@ const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
         <div className="flex flex-col gap-4 overflow-hidden">
           <div className="z-10 flex items-center justify-between rounded-t-3xl border border-white/10 p-4 backdrop-blur-3xl">
             <div className="text-2xl font-bold text-slate-400 hover:text-theme">
-              <Icon name="meeting_room" isTruncate={true} copyable={true}>
+              <Icon name="meeting_room" isTruncate={true} isCopyable={true}>
                 {form.roomId}
               </Icon>
             </div>
@@ -92,14 +91,17 @@ const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
                   <Icon name="more_vert" />
                 </div>
                 <div className="absolute right-0 top-full z-10 hidden translate-y-2 flex-col gap-4 rounded-3xl border border-white/10 bg-slate-900/80 p-4 before:absolute before:-top-10 before:right-0 before:h-14 before:w-8 group-hover:flex">
-                  <Button action={handleCollapse} name="left_panel_close" size="SMALL">
-                    Collapse
+                  <Button action={handleCollapse} isStretch={true} name="left_panel_close">
+                    {translate("Collapse", "Thu gọn")}
                   </Button>
-                  <Button action={handleClearChat} name="delete_sweep" size="SMALL">
-                    Clear chat
+                  <Button action={handleClearChat} isStretch={true} name="delete_sweep">
+                    {translate("Clear chat", "Xoá tin nhắn")}
                   </Button>
-                  <Button action={handleLeave} name="logout" size="SMALL">
-                    Leave room
+                  <Button action={toggleLanguage} isStretch={true} name="translate">
+                    {translate("Vietnamese", "Tiếng Anh")}
+                  </Button>
+                  <Button action={handleLeave} isStretch={true} name="logout">
+                    {translate("Leave room", "Rời phòng")}
                   </Button>
                 </div>
               </div>
@@ -122,28 +124,23 @@ const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
               required
               className="input"
               type="text"
-              placeholder="Message..."
+              placeholder={translate("Message...", "Tin nhắn...")}
               value={message}
               onInput={handleTyping}
               onDrop={(event) => event.preventDefault()}
             />
-            <Button name="send" />
+            <Button name="send" size="LARGE" />
           </form>
         </div>
       </div>
       {isCollapse && (
         <div className="fixed left-0 top-0 z-50 h-screen translate-x-[calc(1rem-100%)] border-white/10 p-4 transition-all ease-out hover:translate-x-0 hover:border-l hover:bg-slate-900/80">
           <div className="flex h-full flex-col items-center justify-center gap-4">
-            <Button action={handleExpand} name="left_panel_open" size="SMALL" stretch={true}>
-              Expand
+            <Button action={handleExpand} name="left_panel_open" isStretch={true}>
+              {translate("Expand", "Mở rộng")}
             </Button>
-            <Button
-              action={handleNotice}
-              name={isNotice ? "notifications" : "notifications_off"}
-              size="SMALL"
-              stretch={true}
-            >
-              {isNotice ? "Mute" : "Unmute"}
+            <Button action={handleNotice} name={isNotice ? "visibility" : "visibility_off"} isStretch={true}>
+              {isNotice ? translate("Hide Messages", "Ẩn thông báo") : translate("Show Messages", "Hiện thông báo")}
             </Button>
           </div>
         </div>

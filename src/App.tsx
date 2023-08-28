@@ -1,8 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import MainLayout from "./layouts/MainLayout";
-import Login from "./screens/Login";
-import Game from "./screens/Game";
+import { Game, Login } from "./screens";
+import { MainLayout } from "./layouts";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {

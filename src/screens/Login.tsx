@@ -2,13 +2,14 @@ import { useRef, useState, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
-import Icon from "../components/elements/Icon";
-import Button from "../components/elements/Button";
 import useStore from "../stores";
+import { Button, Icon } from "../components/elements";
+import { useLanguages } from "../hooks";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { form, setSocket, setForm, setRoom } = useStore();
+  const translate = useLanguages();
+  const { form, setSocket, setForm, setRoom, toggleLanguage } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const serverUrlRef = useRef<HTMLInputElement>(null);
   const roomIdRef = useRef<HTMLInputElement>(null);
@@ -33,16 +34,21 @@ const Login = () => {
       },
     });
 
-    const toastId = toast(<Icon isLoading>Connecting to the server...</Icon>, {
-      autoClose: false,
-    });
+    const toastId = toast(
+      <Icon isLoading>{translate("Connecting to the server...", "Đang kết nối với máy chủ...")}</Icon>,
+      {
+        autoClose: false,
+      }
+    );
 
     socket.on("connect_error", () => {
       toast.update(toastId, {
         render: (
           <>
-            <div>Failed to connect to the server!</div>
-            <div>Please make sure you provide a valid server URL!</div>
+            <div>{translate("Failed to connect to the server!", "Kết nối với máy chủ thất bại!")}</div>
+            <div>
+              {translate("Please make sure you provide a valid server URL!", "Vui lòng cung cấp một đường dẫn hợp lệ!")}
+            </div>
           </>
         ),
         type: "error",
@@ -67,11 +73,11 @@ const Login = () => {
           setSocket(socket);
           setRoom(payload.room);
           toast.update(toastId, {
-            render: "Successfully connected to the server!",
+            render: translate("Successfully connected to the server!", "Kết nối với máy chủ thành công!"),
             type: "success",
             autoClose: 3000,
           });
-          sessionStorage.setItem("yames", JSON.stringify(form));
+          sessionStorage.setItem("yames-form", JSON.stringify(form));
           navigate("/");
           break;
 
@@ -96,13 +102,15 @@ const Login = () => {
     <div className="flex min-h-screen flex-col items-center justify-center bg-[url('/images/background.jpg')] bg-cover bg-no-repeat">
       <form
         onSubmit={handleSubmit}
-        className="flex h-[50rem] w-[40rem] flex-col justify-between rounded-b-3xl border border-white/10 p-20 backdrop-blur-3xl before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-gradient-to-r before:from-theme before:via-indigo-500 before:to-red-300"
+        className="relative flex h-[50rem] w-[40rem] flex-col justify-between rounded-b-3xl border border-white/10 p-20 backdrop-blur-3xl before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-gradient-to-r before:from-theme before:via-indigo-500 before:to-red-300"
       >
-        <h1 className="text-center text-6xl font-bold uppercase text-theme">Yames</h1>
+        <h1 className="text-center text-6xl font-bold uppercase leading-tight text-theme">
+          {translate("Infinite Battlefield", "Chiến Đồng Bất Tận")}
+        </h1>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="serverUrl" className="font-bold text-white">
-              <Icon name="dns">Server URL</Icon>
+              <Icon name="dns">{translate("Server URL", "Đường dẫn đến máy chủ")}</Icon>
             </label>
             <input
               required
@@ -123,7 +131,7 @@ const Login = () => {
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="playerName" className="font-bold text-white">
-              <Icon name="person">Player Name</Icon>
+              <Icon name="person">{translate("Player Name", "Tên người chơi")}</Icon>
             </label>
             <input
               required
@@ -143,7 +151,7 @@ const Login = () => {
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="roomId" className="font-bold text-white">
-              <Icon name="meeting_room">Room ID</Icon>
+              <Icon name="meeting_room">{translate("Room ID", "Mã phòng")}</Icon>
             </label>
             <input
               required
@@ -163,9 +171,15 @@ const Login = () => {
             />
           </div>
         </div>
-        <Button name="login" disabled={isLoading}>
-          Join room
+        <Button name="login" isDisabled={isLoading} size="LARGE">
+          {translate("Join room", "Vào phòng")}
         </Button>
+        <div
+          onClick={toggleLanguage}
+          className="absolute bottom-4 right-4 cursor-pointer text-white/50 hover:text-theme"
+        >
+          <Icon name="translate" />
+        </div>
       </form>
     </div>
   );
