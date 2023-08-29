@@ -30,6 +30,7 @@ const socket = (server: http.Server) => {
               payload: {
                 playerName: payload.playerName,
                 content: "has joined room",
+                translatedContent: "đã vào phòng",
                 room,
               },
             });
@@ -38,6 +39,7 @@ const socket = (server: http.Server) => {
               type: "ERRORS",
               payload: {
                 message: "The room you selected is full! Please choose another room!",
+                translatedMessage: "Phòng bạn chọn đã đủ số lượng người chơi! Vui lòng chọn phòng khác!",
               },
             });
           }
@@ -66,6 +68,7 @@ const socket = (server: http.Server) => {
           payload: {
             playerName: player.getName(),
             content: "has left room",
+            translatedContent: "đã rời phòng",
             room,
           },
         });
