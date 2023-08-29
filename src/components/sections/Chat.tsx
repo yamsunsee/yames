@@ -18,10 +18,12 @@ const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
       if (messages[0].type === "MESSAGE") {
         toast.info(
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-rival font-bold uppercase text-white">
+            <div className="flex h-8 min-w-[2rem] items-center justify-center rounded-full bg-rival font-bold uppercase text-white">
               {messages[0].playerName.substring(0, 1)}
             </div>
-            <div className="rounded-full bg-theme px-4 py-1 text-white">{messages[0].content}</div>
+            <div className="max-w-[80vw] break-words rounded-2xl bg-theme px-4 py-1 text-white">
+              {messages[0].content}
+            </div>
           </div>,
           {
             icon: false,
@@ -112,7 +114,9 @@ const Chat: FC<ChatProps> = ({ isCollapse, toggleCollapse }) => {
               message.type === "NOTIFICATION" ? (
                 <div key={index} className="flex gap-1 self-center italic">
                   <div className="max-w-[10ch] truncate font-bold text-rival">{message.playerName}</div>
-                  <div className="text-slate-400">{message.content}</div>
+                  <div className="text-slate-400">
+                    {translate(message.content, message?.translatedContent || message.content)}
+                  </div>
                 </div>
               ) : (
                 <Message key={index} isSelf={message.playerName === form.playerName} data={message} />

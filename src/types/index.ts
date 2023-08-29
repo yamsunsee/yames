@@ -20,6 +20,7 @@ export type Message = {
   type: "NOTIFICATION" | "MESSAGE";
   playerName: string;
   content: string;
+  translatedContent?: string;
 };
 
 export type Form = {

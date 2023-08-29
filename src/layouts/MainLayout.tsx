@@ -10,22 +10,30 @@ import { Chat } from "../components/sections";
 const MainLayout = () => {
   const navigate = useNavigate();
   const translate = useLanguages();
-  const { socket, setSocket, form, setForm, setRoom, setMessages } = useStore();
+  const { socket, setSocket, form, setForm, setRoom, setMessages, setLanguage } = useStore();
   const [isCollapse, setIsCollapse] = useState(false);
 
   useEffect(() => {
     setMessages({
       type: "NOTIFICATION",
       playerName: "",
-      content: translate("You has joined room", "Bạn đã vào phòng"),
+      content: "You has joined room",
+      translatedContent: "Bạn đã vào phòng",
     });
+  }, []);
+
+  useEffect(() => {
+    const localData = sessionStorage.getItem("yames-language");
+    if (localData) {
+      const localLanguage = JSON.parse(localData);
+      setLanguage(localLanguage);
+    }
   }, []);
 
   useEffect(() => {
     if (socket) {
       socket.on("CLIENT", (action) => {
         const { type, payload } = action;
-        console.log(payload);
 
         switch (type) {
           case "NOTIFICATIONS":
@@ -33,6 +41,7 @@ const MainLayout = () => {
               type: "NOTIFICATION",
               playerName: payload.playerName,
               content: payload.content,
+              translatedContent: payload.translatedContent,
             });
             setRoom(payload.room);
             break;
@@ -117,7 +126,7 @@ const MainLayout = () => {
 
             case "ERRORS":
               toast.update(toastId, {
-                render: payload.message,
+                render: translate(payload.message, payload.translatedMessage),
                 type: "error",
                 autoClose: 3000,
               });
@@ -130,7 +139,7 @@ const MainLayout = () => {
         });
       } else navigate("/login");
     }
-  }, [socket]);
+  }, []);
 
   return (
     <>

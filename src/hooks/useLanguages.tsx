@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { LANGUAGE } from "../types";
 import useStore from "../stores";
 
@@ -13,10 +13,13 @@ const useLanguages = () => {
     return LANGUAGE.ENGLISH;
   }, [language]);
 
-  const translate = (englishContent: string, vietnameseContent: string) => {
-    if (localLanguage === LANGUAGE.ENGLISH) return englishContent;
-    return vietnameseContent;
-  };
+  const translate = useCallback(
+    (englishContent: string, vietnameseContent: string) => {
+      if (localLanguage === LANGUAGE.ENGLISH) return englishContent;
+      return vietnameseContent;
+    },
+    [localLanguage]
+  );
 
   return translate;
 };

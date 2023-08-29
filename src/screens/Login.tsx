@@ -16,7 +16,7 @@ const Login = () => {
 
   useEffect(() => {
     serverUrlRef.current?.focus();
-    const localData = sessionStorage.getItem("yames");
+    const localData = sessionStorage.getItem("yames-form");
     if (localData) {
       const localForm = JSON.parse(localData);
       setForm(localForm);
@@ -83,7 +83,7 @@ const Login = () => {
 
         case "ERRORS":
           toast.update(toastId, {
-            render: payload.message,
+            render: translate(payload.message, payload.translatedMessage),
             type: "error",
             autoClose: 3000,
           });
